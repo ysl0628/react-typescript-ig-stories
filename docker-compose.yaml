@@ -13,7 +13,7 @@ services:
             context: .
             dockerfile: dockerfile.prod 
         ports:
-            - "3000:80"
+            - "80:80"
     front-image:
         image: ysl0628/instagram:v1
         ports:
