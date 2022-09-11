@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+    front:
+        build: .
+        ports:
+            - "4000:3000"
+        # 將本機根目錄的資料夾掛載至 container 的工作目錄 app 資料夾中
+        volumes:
+            - ./:/app
+    front-prod:
+        build: 
+            context: .
+            dockerfile: dockerfile.prod 
+        ports:
+            - "3000:80"
+    front-image:
+        image: ysl0628/instagram:v1
+        ports:
+            - "3300:80"
+
+# docker compose up -d front1 front
+
+# docker compose down
+
+# docker run --rm -p 4000:3000 -d -v /Users/ysl0628/Desktop/React/React_Typscript/react-typescript-ig-stories/:/app test:v1
