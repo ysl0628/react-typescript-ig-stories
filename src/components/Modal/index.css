@@ -1,0 +1,96 @@
+img{
+    max-width: 100%;
+    display: block;
+}
+*,*::after,*::before{
+    box-sizing: border-box;
+    padding:0;
+    margin:0;
+}
+body{
+    background: #1b1d20;
+}
+
+.slide{
+    max-width: 380px;
+    margin: 20px auto;
+    display: grid;
+    box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.4);
+}
+
+.slide-items{
+    position: relative;
+    grid-area: 1/1;
+    /* 製作圖片圓角 */
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.slide-nav{
+    grid-area: 1/1;
+    z-index: 1;
+    /*  */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+}
+
+.slide-nav button{
+    opacity: 0;
+}
+
+.slide-items > *{
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+.slide-items > .active{
+    position: relative;
+    opacity: 1;
+    pointer-events: initial;
+}
+
+.slide-thumb{
+    display: flex;
+    /*  */
+    grid-column: 1/3;
+}
+
+.slide-thumb > span {
+    flex: 1;
+    display: block;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.4);
+    margin: 5px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+
+.slide-thumb > span.active::after{
+    content: "";
+    display: block;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 3px;
+    height: inherit;
+    transform: translateX(-100%);
+    animation: thumb 5s linear;
+    animation-fill-mode: forwards;
+    animation-play-state: var(--animationPlayState, running);
+}
+
+.slide-thumb > span.finished::after{
+    content: "";
+    display: block;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 3px;
+    height: inherit;
+}
+
+@keyframes thumb {
+    to{
+        transform:initial
+    }
+}
