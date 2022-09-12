@@ -7,7 +7,7 @@ type BackdropProps = {
 
 export default function Backdrop(props: BackdropProps) {
   return ReactDOM.createPortal(
-    <div>{props.children}</div>,
+    <div className="backdrop">{props.children}</div>,
     document.getElementById("backdrop-modal") as HTMLElement
   );
 }
