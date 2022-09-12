@@ -23,6 +23,7 @@
 .stories-container .content{
     flex: 0 0 90px;
     position: relative;
+    cursor: pointer;
 }
 
 .stories-container .content img{
