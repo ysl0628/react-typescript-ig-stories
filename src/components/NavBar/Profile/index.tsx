@@ -18,7 +18,7 @@ export default function Profile(props: ProfileProps) {
       >
         <img src={props.url} alt="" />
       </div>
-      {modalShow && <Modal />}
+      {modalShow && <Modal show={modalShow} close={setModalShow} />}
     </>
   );
 }
