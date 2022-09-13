@@ -12,6 +12,9 @@ export const slideSlice = createSlice({
   name: "slice",
   initialState: initialState,
   reducers: {
+    init(state) {
+      state.activeSlideIndex = 0;
+    },
     nextSlide(state) {
       state.activeSlideIndex += 1;
     },
@@ -21,5 +24,5 @@ export const slideSlice = createSlice({
   },
 });
 
-export const { nextSlide, prevSlide } = slideSlice.actions;
+export const { nextSlide, prevSlide, init } = slideSlice.actions;
 export default slideSlice.reducer;
