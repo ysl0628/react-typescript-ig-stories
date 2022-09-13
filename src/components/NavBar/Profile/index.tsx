@@ -5,6 +5,7 @@ type ProfileProps = {
   id: string;
   username?: string;
   url: string;
+  posts: string[];
 };
 export default function Profile(props: ProfileProps) {
   const [modalShow, setModalShow] = useState<boolean>(false);
@@ -18,7 +19,9 @@ export default function Profile(props: ProfileProps) {
       >
         <img src={props.url} alt="" />
       </div>
-      {modalShow && <Modal show={modalShow} close={setModalShow} />}
+      {modalShow && (
+        <Modal show={modalShow} close={setModalShow} posts={props.posts} />
+      )}
     </>
   );
 }

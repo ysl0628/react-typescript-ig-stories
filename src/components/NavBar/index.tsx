@@ -9,7 +9,12 @@ export default function NavBar() {
   return (
     <div className="stories-container">
       {profiles.map((profile) => (
-        <Profile key={profile.id} id={profile.id} url={profile.profileImg} />
+        <Profile
+          key={profile.id}
+          id={profile.id}
+          url={profile.profileImg}
+          posts={profile.posts as string[]}
+        />
       ))}
     </div>
   );
