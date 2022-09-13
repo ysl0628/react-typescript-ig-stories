@@ -1,4 +1,5 @@
-import { useAppSelector } from "../../hooks/useRedux";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { init, nextSlide, prevSlide } from "../../store/reducers/slideSlice";
 import Backdrop from "../../UI/Backdrop";
 import "./index.css";
 
@@ -9,16 +10,19 @@ type ModalProps = {
 };
 
 export default function Modal({ show, close, posts }: ModalProps) {
-  const activeSlideIndex = useAppSelector(
+  const currentSlideIndex = useAppSelector(
     (state) => state.slide.activeSlideIndex
   );
-  console.log(activeSlideIndex);
+  console.log(currentSlideIndex);
+  const dispatch = useAppDispatch();
 
   const prevHandler = () => {
     console.log("按了 prev 按鈕");
+    dispatch(prevSlide());
   };
   const nextHandler = () => {
     console.log("按了 next 按鈕");
+    dispatch(nextSlide());
   };
 
   return (
@@ -28,6 +32,7 @@ export default function Modal({ show, close, posts }: ModalProps) {
           className="close-btn"
           onClick={() => {
             close(false);
+            dispatch(init());
           }}
         >
           X
@@ -37,7 +42,7 @@ export default function Modal({ show, close, posts }: ModalProps) {
             <img
               key={index}
               src={post}
-              className={`${index === activeSlideIndex ? "active" : ""}`}
+              className={`${index === currentSlideIndex ? "active" : ""}`}
               alt=""
             />
           ))}
@@ -47,14 +52,24 @@ export default function Modal({ show, close, posts }: ModalProps) {
             {posts.map((_, index) => (
               <span
                 key={index}
-                className={`${index === activeSlideIndex ? "active" : ""}`}
+                className={`${index === currentSlideIndex ? "active" : ""} ${
+                  index < currentSlideIndex ? "finished" : ""
+                }`}
               ></span>
             ))}
           </div>
-          <button onClick={prevHandler} className="slide-prev">
+          <button
+            onClick={prevHandler}
+            disabled={currentSlideIndex === 0}
+            className="slide-prev"
+          >
             prev
           </button>
-          <button onClick={nextHandler} className="slide-next">
+          <button
+            onClick={nextHandler}
+            disabled={currentSlideIndex === posts.length - 1}
+            className="slide-next"
+          >
             next
           </button>
         </nav>
