@@ -4,9 +4,17 @@ import "./index.css";
 type ModalProps = {
   show: boolean;
   close: React.Dispatch<React.SetStateAction<boolean>>;
+  posts: string[];
 };
 
-export default function Modal({ show, close }: ModalProps) {
+export default function Modal({ show, close, posts }: ModalProps) {
+  const prevHandler = () => {
+    console.log("按了 prev 按鈕");
+  };
+  const nextHandler = () => {
+    console.log("按了 next 按鈕");
+  };
+
   return (
     <Backdrop>
       <div data-slide="slide" className="slide">
@@ -19,32 +27,22 @@ export default function Modal({ show, close }: ModalProps) {
           X
         </button>
         <div className="slide-items">
-          <img
-            src="https://images.unsplash.com/photo-1661347335435-6d851eb110f5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-            alt=""
-          />
-          <img
-            src="https://images.unsplash.com/photo-1661347335435-6d851eb110f5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-            alt=""
-          />
-          <img
-            src="https://images.unsplash.com/photo-1661347335435-6d851eb110f5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-            alt=""
-          />
-          <img
-            src="https://images.unsplash.com/photo-1661347335435-6d851eb110f5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-            alt=""
-          />
+          {posts.map((post, index) => (
+            <img key={index} src={post} alt="" />
+          ))}
         </div>
         <nav className="slide-nav">
           <div className="slide-thumb">
-            <span className="active"></span>
-            <span></span>
-            <span></span>
-            <span></span>
+            {posts.map((index) => (
+              <span key={index}></span>
+            ))}
           </div>
-          <button className="slide-prev">prev</button>
-          <button className="slide-next">next</button>
+          <button onClick={prevHandler} className="slide-prev">
+            prev
+          </button>
+          <button onClick={nextHandler} className="slide-next">
+            next
+          </button>
         </nav>
       </div>
     </Backdrop>
