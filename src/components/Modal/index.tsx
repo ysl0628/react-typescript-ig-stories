@@ -6,6 +6,7 @@ import {
   pause,
   play,
   prevSlide,
+  setCurrentUser,
 } from "../../store/reducers/slideSlice";
 import Backdrop from "../../UI/Backdrop";
 import "./index.css";
@@ -24,6 +25,10 @@ export default function Modal({ close, posts }: ModalProps) {
     if (slide.currentIndex > 0) {
       return dispatch(prevSlide());
     }
+    if (slide.currentUserIndex === 0) {
+      return dispatch(setCurrentUser(0));
+    }
+    dispatch(setCurrentUser(slide.currentUserIndex - 1));
     dispatch(init());
   };
 
@@ -31,8 +36,9 @@ export default function Modal({ close, posts }: ModalProps) {
     if (slide.currentIndex < posts.length - 1) {
       return dispatch(nextSlide());
     }
+    dispatch(setCurrentUser(slide.currentUserIndex + 1));
     dispatch(init());
-  }, [slide.currentIndex]);
+  }, [slide.currentIndex, slide.currentUserIndex]);
 
   useEffect(() => {
     timerRef.current = setTimeout(nextHandler, 5000);
