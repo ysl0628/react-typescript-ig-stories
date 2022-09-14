@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { init, nextSlide, prevSlide } from "../../store/reducers/slideSlice";
 import Backdrop from "../../UI/Backdrop";
@@ -11,10 +11,12 @@ type ModalProps = {
 };
 
 export default function Modal({ show, close, posts }: ModalProps) {
+  const [playState, setPlayState] = useState(true);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const dispatch = useAppDispatch();
   const currentSlideIndex = useAppSelector(
     (state) => state.slide.activeSlideIndex
   );
-  const dispatch = useAppDispatch();
 
   const prevHandler = () => {
     if (currentSlideIndex === 0) {
@@ -30,8 +32,8 @@ export default function Modal({ show, close, posts }: ModalProps) {
   }, [currentSlideIndex]);
 
   useEffect(() => {
-    const timer = setTimeout(nextHandler, 5000);
-    return () => clearTimeout(timer);
+    timerRef.current = setTimeout(nextHandler, 5000);
+    return () => clearTimeout(timerRef.current);
   }, [nextHandler]);
 
   return (
@@ -63,14 +65,24 @@ export default function Modal({ show, close, posts }: ModalProps) {
                 key={index}
                 className={`${index === currentSlideIndex ? "active" : ""} ${
                   index < currentSlideIndex ? "finished" : ""
-                }`}
+                } ${!playState && "pause"}`}
               ></span>
             ))}
           </div>
           <button onClick={prevHandler} className="slide-prev">
             prev
           </button>
-          <button onClick={nextHandler} className="slide-next">
+          <button
+            onClick={nextHandler}
+            onMouseDown={() => {
+              clearTimeout(timerRef.current);
+              setPlayState(false);
+            }}
+            onMouseUp={() => {
+              setPlayState(true);
+            }}
+            className="slide-next"
+          >
             next
           </button>
         </nav>

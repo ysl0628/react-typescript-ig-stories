@@ -94,7 +94,10 @@ img{
     transform: translateX(-100%);
     animation: thumb 5s linear;
     animation-fill-mode: forwards;
-    animation-play-state: var(--animationPlayState, running);
+    animation-play-state: running;
+}
+.slide-thumb > span.pause::after{
+    animation-play-state: paused;
 }
 
 .slide-thumb > span.finished::after{
