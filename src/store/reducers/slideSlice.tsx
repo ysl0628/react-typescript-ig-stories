@@ -1,11 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 type Active = {
-  activeSlideIndex: number;
+  currentIndex: number;
+  currentUserIndex: number;
+  playState: boolean;
 };
 
 const initialState: Active = {
-  activeSlideIndex: 0,
+  currentIndex: 0,
+  currentUserIndex: 0,
+  playState: true,
 };
 
 export const slideSlice = createSlice({
@@ -13,16 +17,27 @@ export const slideSlice = createSlice({
   initialState: initialState,
   reducers: {
     init(state) {
-      state.activeSlideIndex = 0;
+      state.currentIndex = 0;
+      state.playState = true;
     },
     nextSlide(state) {
-      state.activeSlideIndex += 1;
+      state.currentIndex += 1;
     },
     prevSlide(state) {
-      state.activeSlideIndex -= 1;
+      state.currentIndex -= 1;
+    },
+    pause(state) {
+      state.playState = false;
+    },
+    play(state) {
+      state.playState = true;
+    },
+    setCurrentUser(state, action) {
+      state.currentUserIndex = action.payload;
     },
   },
 });
 
-export const { nextSlide, prevSlide, init } = slideSlice.actions;
+export const { nextSlide, prevSlide, init, pause, play, setCurrentUser } =
+  slideSlice.actions;
 export default slideSlice.reducer;

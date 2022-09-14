@@ -1,35 +1,38 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
-import { init, nextSlide, prevSlide } from "../../store/reducers/slideSlice";
+import {
+  init,
+  nextSlide,
+  pause,
+  play,
+  prevSlide,
+} from "../../store/reducers/slideSlice";
 import Backdrop from "../../UI/Backdrop";
 import "./index.css";
 
 type ModalProps = {
-  show: boolean;
   close: React.Dispatch<React.SetStateAction<boolean>>;
   posts: string[];
 };
 
-export default function Modal({ show, close, posts }: ModalProps) {
-  const [playState, setPlayState] = useState(true);
+export default function Modal({ close, posts }: ModalProps) {
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const dispatch = useAppDispatch();
-  const currentSlideIndex = useAppSelector(
-    (state) => state.slide.activeSlideIndex
-  );
+  const slide = useAppSelector((state) => state.slide);
 
   const prevHandler = () => {
-    if (currentSlideIndex === 0) {
-      return dispatch(init());
+    if (slide.currentIndex > 0) {
+      return dispatch(prevSlide());
     }
-    dispatch(prevSlide());
+    dispatch(init());
   };
+
   const nextHandler = useCallback(() => {
-    if (currentSlideIndex < posts.length - 1) {
+    if (slide.currentIndex < posts.length - 1) {
       return dispatch(nextSlide());
     }
     dispatch(init());
-  }, [currentSlideIndex]);
+  }, [slide.currentIndex]);
 
   useEffect(() => {
     timerRef.current = setTimeout(nextHandler, 5000);
@@ -53,7 +56,7 @@ export default function Modal({ show, close, posts }: ModalProps) {
             <img
               key={index}
               src={post}
-              className={`${index === currentSlideIndex ? "active" : ""}`}
+              className={`${index === slide.currentIndex ? "active" : ""}`}
               alt=""
             />
           ))}
@@ -63,23 +66,35 @@ export default function Modal({ show, close, posts }: ModalProps) {
             {posts.map((_, index) => (
               <span
                 key={index}
-                className={`${index === currentSlideIndex ? "active" : ""} ${
-                  index < currentSlideIndex ? "finished" : ""
-                } ${!playState && "pause"}`}
+                className={`
+                ${index === slide.currentIndex ? "active" : ""} 
+                ${index < slide.currentIndex ? "finished" : ""} 
+                ${!slide.playState ? "pause" : ""}
+                `}
               ></span>
             ))}
           </div>
-          <button onClick={prevHandler} className="slide-prev">
+          <button
+            onClick={prevHandler}
+            onMouseDown={() => {
+              dispatch(pause());
+              clearTimeout(timerRef.current);
+            }}
+            onMouseUp={() => {
+              dispatch(play());
+            }}
+            className="slide-prev"
+          >
             prev
           </button>
           <button
             onClick={nextHandler}
             onMouseDown={() => {
               clearTimeout(timerRef.current);
-              setPlayState(false);
+              dispatch(pause());
             }}
             onMouseUp={() => {
-              setPlayState(true);
+              dispatch(play());
             }}
             className="slide-next"
           >
