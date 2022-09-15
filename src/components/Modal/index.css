@@ -1,115 +1,137 @@
-img{
-    max-width: 100%;
-    display:block;
+img {
+  max-width: 100%;
+  display: block;
 }
-*,*::after,*::before{
-    box-sizing: border-box;
-    padding:0;
-    margin:0;
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
-.close-btn{
-    position: fixed;
-    top:10px;
-    right:10px;
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-    background-color: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
-.slide{
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    max-width: 380px;
-    max-height: 550px;
-    display: grid;
-    box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.4);
+.close-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  background-color: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
 }
 
-.slide-items{
-    position: relative;
-    grid-area: 1/1;
-    /* 製作圖片圓角 */
-    border-radius: 5px;
-    overflow: hidden;
+.slide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  max-width: 380px;
+  max-height: 550px;
+  display: grid;
+  box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.4);
 }
 
-.slide-nav{
-    grid-area: 1/1;
-    z-index: 1;
-    /*  */
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto 1fr;
+.slide-items {
+  position: relative;
+  grid-area: 1/1;
+  /* 製作圖片圓角 */
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-.slide-nav button{
-    opacity: 0;
+.slide-nav {
+  grid-area: 1/1;
+  z-index: 1;
+  /*  */
+  /* display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr 1fr; */
+  position: relative;
 }
 
-.slide-items > *{
-    position: absolute;
-    top: 50%;
-    transform: translate(0,-50%);
-    opacity: 0;
-    pointer-events: none;
+.slide-userImage {
+  margin-left: 10px;
+  margin-top: 5px;
 }
 
-.slide-items > .active{
-    position: relative;
-    opacity: 1;
-    pointer-events: initial;
+.slide-userImage img {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-.slide-thumb{
-    display: flex;
-    /*  */
-    grid-column: 1/3;
+.slide-username p {
+  color: white;
+  font-size: 14px;
+  position: absolute;
+  top: 25px;
+  left: 50px;
+}
+
+.slide-nav button {
+  opacity: 1;
+}
+
+.slide-items > * {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slide-items > .active {
+  position: relative;
+  opacity: 1;
+  pointer-events: initial;
+}
+
+.slide-thumb {
+  display: flex;
+  /*  */
+  grid-column: 1/3;
 }
 
 .slide-thumb > span {
-    flex: 1;
-    display: block;
-    height: 3px;
-    background: rgba(0, 0, 0, 0.4);
-    margin: 5px;
-    border-radius: 3px;
-    overflow: hidden;
+  flex: 1;
+  display: block;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.4);
+  margin: 5px;
+  border-radius: 3px;
+  overflow: hidden;
 }
 
-
-.slide-thumb > span.active::after{
-    content: "";
-    display: block;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 3px;
-    height: inherit;
-    transform: translateX(-100%);
-    animation: thumb 5s linear;
-    animation-fill-mode: forwards;
-    animation-play-state: running;
+.slide-thumb > span.active::after {
+  content: "";
+  display: block;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
+  height: inherit;
+  transform: translateX(-100%);
+  animation: thumb 5s linear;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
 }
-.slide-thumb > span.pause::after{
-    animation-play-state: paused;
+.slide-thumb > span.pause::after {
+  animation-play-state: paused;
 }
 
-.slide-thumb > span.finished::after{
-    content: "";
-    display: block;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 3px;
-    height: inherit;
+.slide-thumb > span.finished::after {
+  content: "";
+  display: block;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
+  height: inherit;
 }
 
 @keyframes thumb {
-    to{
-        transform:initial
-    }
+  to {
+    transform: initial;
+  }
 }
