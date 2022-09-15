@@ -35,9 +35,6 @@ export default function Profile({
       >
         <img src={url} alt="" />
       </div>
-      {/* {modalShow && (
-        <Modal show={modalShow} close={setModalShow} posts={posts} />
-      )} */}
     </>
   );
 }
