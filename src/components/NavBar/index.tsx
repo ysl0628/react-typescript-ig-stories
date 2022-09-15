@@ -28,6 +28,8 @@ export default function NavBar() {
           key={profiles[currentUser].id}
           close={setModalShow}
           posts={profiles[currentUser].posts as string[]}
+          imgUrl={profiles[currentUser].profileImg}
+          username={profiles[currentUser].username}
         />
       )}
     </div>

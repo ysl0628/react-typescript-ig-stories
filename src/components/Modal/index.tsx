@@ -14,9 +14,11 @@ import "./index.css";
 type ModalProps = {
   close: React.Dispatch<React.SetStateAction<boolean>>;
   posts: string[];
+  imgUrl: string;
+  username: string;
 };
 
-export default function Modal({ close, posts }: ModalProps) {
+export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const dispatch = useAppDispatch();
   const slide = useAppSelector((state) => state.slide);
@@ -79,6 +81,12 @@ export default function Modal({ close, posts }: ModalProps) {
                 `}
               ></span>
             ))}
+          </div>
+          <div className="slide-userImage">
+            <img src={imgUrl} alt="" />
+          </div>
+          <div className="slide-username">
+            <p>{username}</p>
           </div>
           <button
             onClick={prevHandler}
