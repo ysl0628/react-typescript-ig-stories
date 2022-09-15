@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import useProfile from "../../hooks/useProfile";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
   init,
@@ -20,6 +21,7 @@ type ModalProps = {
 
 export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const profiles = useProfile();
   const dispatch = useAppDispatch();
   const slide = useAppSelector((state) => state.slide);
 
@@ -28,7 +30,7 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
       return dispatch(prevSlide());
     }
     if (slide.currentUserIndex === 0) {
-      return dispatch(setCurrentUser(0));
+      return close(false);
     }
     dispatch(setCurrentUser(slide.currentUserIndex - 1));
     dispatch(init());
@@ -37,6 +39,9 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   const nextHandler = useCallback(() => {
     if (slide.currentIndex < posts.length - 1) {
       return dispatch(nextSlide());
+    }
+    if (slide.currentUserIndex === profiles.length - 1) {
+      return dispatch(setCurrentUser(0)) && dispatch(init());
     }
     dispatch(setCurrentUser(slide.currentUserIndex + 1));
     dispatch(init());
