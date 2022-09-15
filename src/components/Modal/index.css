@@ -73,8 +73,18 @@ img {
   left: 50px;
 }
 
-.slide-nav button {
-  opacity: 1;
+.slide-prev {
+  position: absolute;
+  top: 50%;
+  left: -30px;
+  transform: translate(-30px, -50%);
+}
+
+.slide-next {
+  position: absolute;
+  top: 50%;
+  right: -30px;
+  transform: translate(30px, -50%);
 }
 
 .slide-items > * {
