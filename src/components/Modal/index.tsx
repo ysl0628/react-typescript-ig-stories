@@ -1,4 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  faCircleChevronLeft,
+  faCircleChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useCallback, useEffect, useRef } from "react";
 import useProfile from "../../hooks/useProfile";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
@@ -48,7 +53,9 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   }, [slide.currentIndex, slide.currentUserIndex]);
 
   useEffect(() => {
-    timerRef.current = setTimeout(nextHandler, 5000);
+    slide.playState
+      ? (timerRef.current = setTimeout(nextHandler, 5000))
+      : clearTimeout(timerRef.current);
     return () => clearTimeout(timerRef.current);
   }, [nextHandler]);
 
@@ -74,7 +81,16 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
             />
           ))}
         </div>
-        <nav className="slide-nav">
+        <nav
+          onMouseDown={() => {
+            clearTimeout(timerRef.current);
+            dispatch(pause());
+          }}
+          onMouseUp={() => {
+            dispatch(play());
+          }}
+          className="slide-nav"
+        >
           <div className="slide-thumb">
             {posts.map((_, index) => (
               <span
@@ -96,15 +112,15 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
           <button
             onClick={prevHandler}
             onMouseDown={() => {
-              dispatch(pause());
               clearTimeout(timerRef.current);
+              dispatch(pause());
             }}
             onMouseUp={() => {
               dispatch(play());
             }}
             className="slide-prev"
           >
-            prev
+            <FontAwesomeIcon icon={faCircleChevronLeft} />
           </button>
           <button
             onClick={nextHandler}
@@ -117,7 +133,7 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
             }}
             className="slide-next"
           >
-            next
+            <FontAwesomeIcon icon={faCircleChevronRight} />
           </button>
         </nav>
       </div>
