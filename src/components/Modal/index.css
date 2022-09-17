@@ -78,6 +78,11 @@ img {
   top: 50%;
   left: -30px;
   transform: translate(-30px, -50%);
+  border: none;
+  background-color: transparent;
+  font-size: 28px;
+  color: slategray;
+  cursor: pointer;
 }
 
 .slide-next {
@@ -85,6 +90,11 @@ img {
   top: 50%;
   right: -30px;
   transform: translate(30px, -50%);
+  border: none;
+  background-color: transparent;
+  font-size: 28px;
+  color: slategray;
+  cursor: pointer;
 }
 
 .slide-items > * {
