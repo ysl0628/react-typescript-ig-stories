@@ -1,9 +1,12 @@
 import {
   faCircleChevronLeft,
   faCircleChevronRight,
+  faPause,
+  faPlay,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
@@ -25,6 +28,8 @@ type ModalProps = {
 };
 
 export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
+  const [clickTime, setClickTime] = useState<number>();
+  const [pauseTime, setPauseTime] = useState<number>();
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const profiles = useProfile();
   const dispatch = useAppDispatch();
@@ -42,6 +47,8 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   };
 
   const nextHandler = useCallback(() => {
+    let d = new Date();
+    setClickTime(d.getMilliseconds());
     if (slide.currentIndex < posts.length - 1) {
       return dispatch(nextSlide());
     }
@@ -54,10 +61,13 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
 
   useEffect(() => {
     slide.playState
-      ? (timerRef.current = setTimeout(nextHandler, 5000))
+      ? (timerRef.current = setTimeout(
+          nextHandler,
+          clickTime && pauseTime ? 5000 - (pauseTime - clickTime) : 5000
+        ))
       : clearTimeout(timerRef.current);
     return () => clearTimeout(timerRef.current);
-  }, [nextHandler]);
+  }, [nextHandler, slide.playState]);
 
   return (
     <Backdrop>
@@ -69,7 +79,7 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
             dispatch(init());
           }}
         >
-          X
+          <FontAwesomeIcon icon={faXmark} />
         </button>
         <div className="slide-items">
           {posts.map((post, index) => (
@@ -83,7 +93,8 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
         </div>
         <nav
           onMouseDown={() => {
-            clearTimeout(timerRef.current);
+            let p = new Date();
+            setPauseTime(p.getMilliseconds());
             dispatch(pause());
           }}
           onMouseUp={() => {
@@ -108,31 +119,20 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
           </div>
           <div className="slide-username">
             <p>{username}</p>
+            {slide.playState ? (
+              <button>
+                <FontAwesomeIcon icon={faPlay} />
+              </button>
+            ) : (
+              <button>
+                <FontAwesomeIcon icon={faPause} />
+              </button>
+            )}
           </div>
-          <button
-            onClick={prevHandler}
-            onMouseDown={() => {
-              clearTimeout(timerRef.current);
-              dispatch(pause());
-            }}
-            onMouseUp={() => {
-              dispatch(play());
-            }}
-            className="slide-prev"
-          >
+          <button onClick={prevHandler} className="slide-prev">
             <FontAwesomeIcon icon={faCircleChevronLeft} />
           </button>
-          <button
-            onClick={nextHandler}
-            onMouseDown={() => {
-              clearTimeout(timerRef.current);
-              dispatch(pause());
-            }}
-            onMouseUp={() => {
-              dispatch(play());
-            }}
-            className="slide-next"
-          >
+          <button onClick={nextHandler} className="slide-next">
             <FontAwesomeIcon icon={faCircleChevronRight} />
           </button>
         </nav>

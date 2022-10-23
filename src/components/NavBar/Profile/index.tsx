@@ -21,7 +21,6 @@ export default function Profile({
 }: ProfileProps) {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.slide.currentUserIndex);
-  console.log(currentUser);
 
   return (
     <>
