@@ -2,12 +2,12 @@ import { Avatar } from "@mui/material";
 import "./post.css";
 import ava from "../../assets/img/profile1.jpg";
 
-const Post = () => {
+const Post = ({ username, caption }: { username: string; caption: string }) => {
   return (
     <div className="post">
       <div className="post_header">
         <Avatar className="post_avatar" alt={"username"} src={ava} />
-        <h3>username</h3>
+        <h3>{username}</h3>
       </div>
       <img
         className="post_image"
@@ -15,10 +15,8 @@ const Post = () => {
         alt=""
       />
       <h4 className="post_text">
-        <strong>reneelan:</strong> Lorem ipsum, dolor sit amet consectetur
-        adipisicing elit. Qui iure tempore culpa molestiae quo. Maxime
-        perspiciatis tempore ad alias sequi ab tenetur, quaerat commodi eius
-        quisquam dolor aut dolorum quod?
+        <strong>{username}:</strong>
+        {caption}
       </h4>
     </div>
   );
