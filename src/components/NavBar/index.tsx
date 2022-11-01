@@ -9,8 +9,6 @@ export default function NavBar() {
   const profiles = useProfile();
   const [modalShow, setModalShow] = useState<boolean>(false);
   const currentUser = useAppSelector((state) => state.slide.currentUserIndex);
-  console.log(modalShow);
-
   return (
     <div className="stories-container">
       {profiles.map((profile, index) => (
