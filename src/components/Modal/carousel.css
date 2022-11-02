@@ -36,14 +36,11 @@
 }
 
 .carousel__cell:nth-child(1) {
-  transform: rotateY(0deg) translateZ(190px);
+  transform: rotateY(0deg) translateZ(110px);
 }
 .carousel__cell:nth-child(2) {
-  transform: rotateY(90deg) translateZ(190px);
+  transform: rotateY(120deg) translateZ(110px);
 }
 .carousel__cell:nth-child(3) {
-  transform: rotateY(180deg) translateZ(190px);
-}
-.carousel__cell:nth-child(4) {
-  transform: rotateY(270deg) translateZ(190px);
+  transform: rotateY(240deg) translateZ(110px);
 }
