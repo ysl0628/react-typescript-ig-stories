@@ -32,28 +32,20 @@ img {
   max-width: 380px;
   max-height: 550px;
   display: grid;
-  box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.4);
 }
 nav {
   transform: translateZ(190px);
-}
-
-.slide-items {
-  position: relative;
-  grid-area: 1/1;
-  /* 製作圖片圓角 */
-  border-radius: 5px;
-  overflow: hidden;
 }
 
 .slide-nav {
   grid-area: 1/1;
   z-index: 1;
   /*  */
-  /* display: grid;
+  display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr 1fr; */
+  grid-template-rows: auto 1fr 1fr;
   position: relative;
+  top: -560px;
 }
 
 .slide-userImage {
@@ -72,7 +64,7 @@ nav {
   color: white;
   font-size: 14px;
   position: absolute;
-  top: 25px;
+  top: -25px;
   left: 50px;
 }
 
@@ -88,8 +80,8 @@ nav {
 
 .slide-prev {
   position: fixed;
-  top: 200px;
-  left: 10px;
+  top: 500px;
+  left: 80px;
   width: 50px;
   height: 50px;
   font-size: 20px;
@@ -101,8 +93,8 @@ nav {
 
 .slide-next {
   position: fixed;
-  top: 200px;
-  right: 10px;
+  top: 500px;
+  right: 80px;
   width: 50px;
   height: 50px;
   font-size: 20px;
@@ -112,16 +104,25 @@ nav {
   cursor: pointer;
 }
 
+.slide-items {
+  position: relative;
+  grid-area: 1/1;
+  /* 製作圖片圓角 */
+  border-radius: 5px;
+  overflow: hidden;
+}
+
 .slide-items > * {
   position: absolute;
-  /* top: 50%;
-  transform: translate(0, -50%); */
+  top: 0%;
+  /* transform: translate(0, -50%); */
   opacity: 0;
   pointer-events: none;
 }
 
 .slide-items > .active {
   position: relative;
+  /* transform: translate(0, 50%); */
   opacity: 1;
   pointer-events: initial;
 }
