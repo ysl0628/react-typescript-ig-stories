@@ -4,12 +4,16 @@ type Active = {
   currentIndex: number;
   currentUserIndex: number;
   playState: boolean;
+  rotateIndex: number;
+  carouselStyle: string;
 };
 
 const initialState: Active = {
   currentIndex: 0,
   currentUserIndex: 0,
   playState: true,
+  rotateIndex: 0,
+  carouselStyle: "translateZ(-500px)",
 };
 
 export const slideSlice = createSlice({
@@ -35,9 +39,23 @@ export const slideSlice = createSlice({
     setCurrentUser(state, action) {
       state.currentUserIndex = action.payload;
     },
+    setRotate(state, action) {
+      state.rotateIndex = action.payload;
+    },
+    setCarouselStyle(state, action) {
+      state.carouselStyle = action.payload;
+    },
   },
 });
 
-export const { nextSlide, prevSlide, init, pause, play, setCurrentUser } =
-  slideSlice.actions;
+export const {
+  nextSlide,
+  prevSlide,
+  init,
+  pause,
+  play,
+  setCurrentUser,
+  setCarouselStyle,
+  setRotate,
+} = slideSlice.actions;
 export default slideSlice.reducer;
