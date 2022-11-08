@@ -15,7 +15,9 @@ import {
   pause,
   play,
   prevSlide,
+  setCarouselStyle,
   setCurrentUser,
+  setRotate,
 } from "../../store/reducers/slideSlice";
 import Backdrop from "../../UI/Backdrop";
 import "./index.css";
@@ -28,7 +30,6 @@ type ModalProps = {
   username: string;
 };
 const cellCount = 3;
-const theta = 360 / cellCount;
 
 export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   const [clickTime, setClickTime] = useState<number>();
@@ -37,69 +38,56 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   const profiles = useProfile();
   const dispatch = useAppDispatch();
   const slide = useAppSelector((state) => state.slide);
-
+  // const angle = theta * slide.rotateIndex * -1;
   const carouselRef = useRef<null | HTMLDivElement>(null);
-  const [carouselStyle, setCarouselStyle] =
-    useState<string>("translateZ(-500px)");
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const cellWidth = carouselRef.current?.offsetWidth;
-  const cellHeight = carouselRef.current?.offsetHeight;
-  const radius = Math.round(cellWidth! / 2 / Math.tan(Math.PI / cellCount));
-
-  const [nowIndex, setNowIndex] = useState<number>(0);
-  const [nextIndex, setNextIndex] = useState<number>();
-  const [prevIndex, setPrevIndex] = useState<number>();
-
-  const nextUser = useCallback(
-    (i: number) => {
-      if (nextIndex && nextIndex > profiles.length - 1) return 0;
-      return i + 1;
-    },
-    [nextIndex, profiles.length]
-  );
+  // const radius = Math.round(cellWidth! / 2 / Math.tan(Math.PI / cellCount));
 
   useEffect(() => {
-    const angle = theta * selectedIndex * -1;
-    setCarouselStyle(`translateZ(${-radius}px) rotateY(${angle}deg)`);
-  }, [carouselStyle, radius, selectedIndex]);
+    const radius = Math.round(cellWidth! / 2 / Math.tan(Math.PI / cellCount));
+    dispatch(setCarouselStyle(`translateZ(${-radius}px)`));
+  }, [cellWidth, dispatch]);
+  // rotateY(${angle}deg)
 
   const prevHandler = () => {
     if (slide.currentIndex > 0) return dispatch(prevSlide());
-
-    // if (slide.currentUserIndex === 0) {
-    //   return close(false);
-    // }
-    setSelectedIndex((prev) => prev - 1);
-    // dispatch(setCurrentUser(slide.currentUserIndex - 1));
+    if (slide.currentUserIndex === 0) {
+      close(false);
+      dispatch(init());
+    }
+    if (slide.rotateIndex === 0) return dispatch(setRotate(0));
+    dispatch(setCarouselStyle(`translateZ(-110px) rotateY(-120deg)`));
+    dispatch(setRotate(slide.currentUserIndex - 1));
+    dispatch(setCurrentUser(slide.currentUserIndex - 1));
     dispatch(init());
   };
 
   const nextHandler = useCallback(() => {
-    let d = new Date();
-    setClickTime(d.getMilliseconds());
-    if (slide.currentIndex < profiles[nowIndex].posts.length - 1)
+    // let d = new Date();
+    // setClickTime(d.getMilliseconds());
+    if (slide.currentIndex < profiles[slide.currentUserIndex].posts.length - 1)
       return dispatch(nextSlide());
 
-    // if (slide.currentUserIndex === profiles.length - 1) {
-    //   return dispatch(setCurrentUser(0)) && dispatch(init());
-    // }
-    setSelectedIndex((prev) => prev + 1);
-    setNowIndex((prev) => prev + 1);
-    setNextIndex(nextUser(nowIndex));
-    dispatch(init());
-    // dispatch(setCurrentUser(slide.currentUserIndex + 1));
-    // dispatch(init());
-  }, [dispatch, nextUser, nowIndex, profiles, slide.currentIndex]);
+    if (slide.currentUserIndex === profiles.length - 1) {
+      return dispatch(setCurrentUser(0)) && dispatch(init());
+    }
 
-  // useEffect(() => {
-  //   slide.playState
-  //     ? (timerRef.current = setTimeout(
-  //         nextHandler,
-  //         clickTime && pauseTime ? 5000 - (pauseTime - clickTime) : 5000
-  //       ))
-  //     : clearTimeout(timerRef.current);
-  //   return () => clearTimeout(timerRef.current);
-  // }, [clickTime, nextHandler, pauseTime, posts.length, slide.playState]);
+    dispatch(setRotate(slide.currentUserIndex + 1));
+    dispatch(setCurrentUser(slide.currentUserIndex + 1));
+    dispatch(setCarouselStyle(`translateZ(-110px) rotateY(120deg)`));
+
+    dispatch(init());
+  }, [dispatch, profiles, slide.currentIndex, slide.currentUserIndex]);
+
+  useEffect(() => {
+    slide.playState
+      ? (timerRef.current = setTimeout(
+          nextHandler,
+          clickTime && pauseTime ? 5000 - (pauseTime - clickTime) : 5000
+        ))
+      : clearTimeout(timerRef.current);
+    return () => clearTimeout(timerRef.current);
+  }, [clickTime, nextHandler, pauseTime, posts.length, slide.playState]);
 
   return (
     <Backdrop>
@@ -109,6 +97,8 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
           onClick={() => {
             close(false);
             dispatch(init());
+            dispatch(setCarouselStyle("translateZ(-500px)"));
+            // dispatch(setRotate(0));
           }}
         >
           <FontAwesomeIcon icon={faXmark} />
@@ -117,11 +107,11 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
           <div
             className="carousel"
             ref={carouselRef}
-            style={{ transform: carouselStyle }}
+            style={{ transform: slide.carouselStyle }}
           >
             <div className="carousel__cell">
               <div className="slide-items">
-                {profiles[nowIndex].posts.map((post, index) => (
+                {profiles[slide.currentUserIndex].posts.map((post, index) => (
                   <img
                     key={index}
                     src={post}
@@ -144,7 +134,7 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
                 className="slide-nav"
               >
                 <div className="slide-thumb">
-                  {profiles[nowIndex].posts.map((_, index) => (
+                  {profiles[slide.currentUserIndex].posts.map((_, index) => (
                     <span
                       key={index}
                       className={`
@@ -156,10 +146,13 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
                   ))}
                 </div>
                 <div className="slide-userImage">
-                  <img src={profiles[nowIndex].profileImg} alt="" />
+                  <img
+                    src={profiles[slide.currentUserIndex].profileImg}
+                    alt=""
+                  />
                 </div>
                 <div className="slide-username">
-                  <p>{profiles[nowIndex].username}</p>
+                  <p>{profiles[slide.currentUserIndex].username}</p>
                   {slide.playState ? (
                     <button>
                       <FontAwesomeIcon icon={faPlay} />
@@ -173,19 +166,77 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
               </nav>
             </div>
             <div className="carousel__cell">
-              {nextIndex && (
+              <div className="slide-items">
+                {profiles[slide.currentUserIndex].posts.map((post, index) => (
+                  <img
+                    key={index}
+                    src={post}
+                    className={`${
+                      index === slide.currentIndex ? "active" : ""
+                    }`}
+                    alt=""
+                  />
+                ))}
+              </div>
+              <nav
+                onMouseDown={() => {
+                  let p = new Date();
+                  setPauseTime(p.getMilliseconds());
+                  dispatch(pause());
+                }}
+                onMouseUp={() => {
+                  dispatch(play());
+                }}
+                className="slide-nav"
+              >
+                <div className="slide-thumb">
+                  {profiles[slide.currentUserIndex].posts.map((_, index) => (
+                    <span
+                      key={index}
+                      className={`
+                ${index === slide.currentIndex ? "active" : ""} 
+                ${index < slide.currentIndex ? "finished" : ""} 
+                ${!slide.playState ? "pause" : ""}
+                `}
+                    ></span>
+                  ))}
+                </div>
+                <div className="slide-userImage">
+                  <img
+                    src={profiles[slide.currentUserIndex].profileImg}
+                    alt=""
+                  />
+                </div>
+                <div className="slide-username">
+                  <p>{profiles[slide.currentUserIndex].username}</p>
+                  {slide.playState ? (
+                    <button>
+                      <FontAwesomeIcon icon={faPlay} />
+                    </button>
+                  ) : (
+                    <button>
+                      <FontAwesomeIcon icon={faPause} />
+                    </button>
+                  )}
+                </div>
+              </nav>
+            </div>
+            <div className="carousel__cell">
+              {slide.currentUserIndex && (
                 <>
                   <div className="slide-items">
-                    {profiles[nextIndex].posts.map((post, index) => (
-                      <img
-                        key={index}
-                        src={post}
-                        className={`${
-                          index === slide.currentIndex ? "active" : ""
-                        }`}
-                        alt=""
-                      />
-                    ))}
+                    {profiles[slide.currentUserIndex].posts.map(
+                      (post, index) => (
+                        <img
+                          key={index}
+                          src={post}
+                          className={`${
+                            index === slide.currentIndex ? "active" : ""
+                          }`}
+                          alt=""
+                        />
+                      )
+                    )}
                   </div>
                   <nav
                     onMouseDown={() => {
@@ -199,22 +250,27 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
                     className="slide-nav"
                   >
                     <div className="slide-thumb">
-                      {profiles[nextIndex].posts.map((_, index) => (
-                        <span
-                          key={index}
-                          className={`
+                      {profiles[slide.currentUserIndex].posts.map(
+                        (_, index) => (
+                          <span
+                            key={index}
+                            className={`
                 ${index === slide.currentIndex ? "active" : ""} 
                 ${index < slide.currentIndex ? "finished" : ""} 
                 ${!slide.playState ? "pause" : ""}
                 `}
-                        ></span>
-                      ))}
+                          ></span>
+                        )
+                      )}
                     </div>
                     <div className="slide-userImage">
-                      <img src={profiles[nextIndex].profileImg} alt="" />
+                      <img
+                        src={profiles[slide.currentUserIndex].profileImg}
+                        alt=""
+                      />
                     </div>
                     <div className="slide-username">
-                      <p>{profiles[nextIndex].username}</p>
+                      <p>{profiles[slide.currentUserIndex].username}</p>
                       {slide.playState ? (
                         <button>
                           <FontAwesomeIcon icon={faPlay} />
@@ -229,7 +285,6 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
                 </>
               )}
             </div>
-            <div className="carousel__cell">3</div>
           </div>
         </div>
         <button id="prev" onClick={prevHandler} className="slide-prev">

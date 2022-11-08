@@ -1,7 +1,9 @@
-import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
-import { setCurrentUser } from "../../../store/reducers/slideSlice";
-import Modal from "../../Modal";
+import { useAppDispatch } from "../../../hooks/useRedux";
+import {
+  setCarouselStyle,
+  setCurrentUser,
+  setRotate,
+} from "../../../store/reducers/slideSlice";
 
 type ProfileProps = {
   index: number;
@@ -20,7 +22,6 @@ export default function Profile({
   setModalShow,
 }: ProfileProps) {
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector((state) => state.slide.currentUserIndex);
 
   return (
     <>
@@ -30,6 +31,8 @@ export default function Profile({
         onClick={() => {
           setModalShow((prev) => !prev);
           dispatch(setCurrentUser(index));
+          dispatch(setRotate(index));
+          dispatch(setCarouselStyle("translateZ(-500px)"));
         }}
       >
         <img src={url} alt="" />

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import useProfile from "../../hooks/useProfile";
 import { useAppSelector } from "../../hooks/useRedux";
 import Modal from "../Modal";
@@ -28,6 +28,7 @@ export default function NavBar() {
           posts={profiles[currentUser].posts as string[]}
           imgUrl={profiles[currentUser].profileImg}
           username={profiles[currentUser].username}
+          // modalShow={modalShow}
         />
       )}
     </div>
