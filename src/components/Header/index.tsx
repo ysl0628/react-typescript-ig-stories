@@ -1,6 +1,11 @@
+import { useState } from "react";
 import "./index.css";
+import SignUp from "./SignUp/SignUp";
 
-const index = () => {
+const Header = () => {
+  const [signUpOpen, setSignUpOpen] = useState<boolean>(false);
+  const handleClick = () => setSignUpOpen(true);
+  const handleClose = () => setSignUpOpen(false);
   return (
     <div className="header">
       <div className="headerImage">
@@ -10,8 +15,12 @@ const index = () => {
           alt="logo ig, instagram new logo vector download"
         />
       </div>
+      <div className="signUp-btn">
+        <button onClick={handleClick}>Sign up</button>
+        {signUpOpen && <SignUp handleClose={handleClose} />}
+      </div>
     </div>
   );
 };
 
-export default index;
+export default Header;
