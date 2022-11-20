@@ -21,18 +21,22 @@ function App() {
     );
   }, []);
 
+  const renderPosts = () => {
+    return posts.map(({ post, id }) => (
+      <Post
+        key={id}
+        username={post.username}
+        caption={post.caption}
+        imageUrl={post.imageUrl}
+      />
+    ));
+  };
+
   return (
     <div className="App">
       <Header />
       <NavBar />
-      {posts.map(({ post, id }) => (
-        <Post
-          key={id}
-          username={post.username}
-          caption={post.caption}
-          imageUrl={post.imageUrl}
-        />
-      ))}
+      {renderPosts()}
     </div>
   );
 }

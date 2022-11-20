@@ -1,15 +1,26 @@
 import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import {
   faCircleChevronLeft,
   faCircleChevronRight,
   faPause,
   faPlay,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import "./index.css";
+import "./carousel.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useEffect, useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
+  Active,
   init,
   nextSlide,
   pause,
@@ -20,8 +31,6 @@ import {
   setRotate,
 } from "../../store/reducers/slideSlice";
 import Backdrop from "../../UI/Backdrop";
-import "./index.css";
-import "./carousel.css";
 
 type ModalProps = {
   close: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,11 +44,11 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   const [clickTime, setClickTime] = useState<number>();
   const [pauseTime, setPauseTime] = useState<number>();
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const carouselRef = useRef<null | HTMLDivElement>(null);
   const profiles = useProfile();
   const dispatch = useAppDispatch();
   const slide = useAppSelector((state) => state.slide);
   // const angle = theta * slide.rotateIndex * -1;
-  const carouselRef = useRef<null | HTMLDivElement>(null);
   const cellWidth = carouselRef.current?.offsetWidth;
   // const radius = Math.round(cellWidth! / 2 / Math.tan(Math.PI / cellCount));
 
@@ -69,13 +78,12 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
       return dispatch(nextSlide());
 
     if (slide.currentUserIndex === profiles.length - 1) {
-      return dispatch(setCurrentUser(0)) && dispatch(init());
+      dispatch(setCurrentUser(0)) && dispatch(init());
+      return;
     }
-
     dispatch(setRotate(slide.currentUserIndex + 1));
     dispatch(setCurrentUser(slide.currentUserIndex + 1));
     dispatch(setCarouselStyle(`translateZ(-110px) rotateY(120deg)`));
-
     dispatch(init());
   }, [dispatch, profiles, slide.currentIndex, slide.currentUserIndex]);
 
@@ -109,182 +117,24 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
             ref={carouselRef}
             style={{ transform: slide.carouselStyle }}
           >
-            <div className="carousel__cell">
-              <div className="slide-items">
-                {profiles[slide.currentUserIndex].posts.map((post, index) => (
-                  <img
-                    key={index}
-                    src={post}
-                    className={`${
-                      index === slide.currentIndex ? "active" : ""
-                    }`}
-                    alt=""
-                  />
-                ))}
-              </div>
-              <nav
-                onMouseDown={() => {
-                  let p = new Date();
-                  setPauseTime(p.getMilliseconds());
-                  dispatch(pause());
-                }}
-                onMouseUp={() => {
-                  dispatch(play());
-                }}
-                className="slide-nav"
-              >
-                <div className="slide-thumb">
-                  {profiles[slide.currentUserIndex].posts.map((_, index) => (
-                    <span
-                      key={index}
-                      className={`
-                ${index === slide.currentIndex ? "active" : ""} 
-                ${index < slide.currentIndex ? "finished" : ""} 
-                ${!slide.playState ? "pause" : ""}
-                `}
-                    ></span>
-                  ))}
-                </div>
-                <div className="slide-userImage">
-                  <img
-                    src={profiles[slide.currentUserIndex].profileImg}
-                    alt=""
-                  />
-                </div>
-                <div className="slide-username">
-                  <p>{profiles[slide.currentUserIndex].username}</p>
-                  {slide.playState ? (
-                    <button>
-                      <FontAwesomeIcon icon={faPlay} />
-                    </button>
-                  ) : (
-                    <button>
-                      <FontAwesomeIcon icon={faPause} />
-                    </button>
-                  )}
-                </div>
-              </nav>
-            </div>
-            <div className="carousel__cell">
-              <div className="slide-items">
-                {profiles[slide.currentUserIndex].posts.map((post, index) => (
-                  <img
-                    key={index}
-                    src={post}
-                    className={`${
-                      index === slide.currentIndex ? "active" : ""
-                    }`}
-                    alt=""
-                  />
-                ))}
-              </div>
-              <nav
-                onMouseDown={() => {
-                  let p = new Date();
-                  setPauseTime(p.getMilliseconds());
-                  dispatch(pause());
-                }}
-                onMouseUp={() => {
-                  dispatch(play());
-                }}
-                className="slide-nav"
-              >
-                <div className="slide-thumb">
-                  {profiles[slide.currentUserIndex].posts.map((_, index) => (
-                    <span
-                      key={index}
-                      className={`
-                ${index === slide.currentIndex ? "active" : ""} 
-                ${index < slide.currentIndex ? "finished" : ""} 
-                ${!slide.playState ? "pause" : ""}
-                `}
-                    ></span>
-                  ))}
-                </div>
-                <div className="slide-userImage">
-                  <img
-                    src={profiles[slide.currentUserIndex].profileImg}
-                    alt=""
-                  />
-                </div>
-                <div className="slide-username">
-                  <p>{profiles[slide.currentUserIndex].username}</p>
-                  {slide.playState ? (
-                    <button>
-                      <FontAwesomeIcon icon={faPlay} />
-                    </button>
-                  ) : (
-                    <button>
-                      <FontAwesomeIcon icon={faPause} />
-                    </button>
-                  )}
-                </div>
-              </nav>
-            </div>
-            <div className="carousel__cell">
-              {slide.currentUserIndex && (
-                <>
-                  <div className="slide-items">
-                    {profiles[slide.currentUserIndex].posts.map(
-                      (post, index) => (
-                        <img
-                          key={index}
-                          src={post}
-                          className={`${
-                            index === slide.currentIndex ? "active" : ""
-                          }`}
-                          alt=""
-                        />
-                      )
-                    )}
-                  </div>
-                  <nav
-                    onMouseDown={() => {
-                      let p = new Date();
-                      setPauseTime(p.getMilliseconds());
-                      dispatch(pause());
-                    }}
-                    onMouseUp={() => {
-                      dispatch(play());
-                    }}
-                    className="slide-nav"
-                  >
-                    <div className="slide-thumb">
-                      {profiles[slide.currentUserIndex].posts.map(
-                        (_, index) => (
-                          <span
-                            key={index}
-                            className={`
-                ${index === slide.currentIndex ? "active" : ""} 
-                ${index < slide.currentIndex ? "finished" : ""} 
-                ${!slide.playState ? "pause" : ""}
-                `}
-                          ></span>
-                        )
-                      )}
-                    </div>
-                    <div className="slide-userImage">
-                      <img
-                        src={profiles[slide.currentUserIndex].profileImg}
-                        alt=""
-                      />
-                    </div>
-                    <div className="slide-username">
-                      <p>{profiles[slide.currentUserIndex].username}</p>
-                      {slide.playState ? (
-                        <button>
-                          <FontAwesomeIcon icon={faPlay} />
-                        </button>
-                      ) : (
-                        <button>
-                          <FontAwesomeIcon icon={faPause} />
-                        </button>
-                      )}
-                    </div>
-                  </nav>
-                </>
-              )}
-            </div>
+            <CarouselCell
+              slide={slide}
+              profiles={profiles}
+              dispatch={dispatch}
+              setPauseTime={setPauseTime}
+            />
+            <CarouselCell
+              slide={slide}
+              profiles={profiles}
+              dispatch={dispatch}
+              setPauseTime={setPauseTime}
+            />
+            <CarouselCell
+              slide={slide}
+              profiles={profiles}
+              dispatch={dispatch}
+              setPauseTime={setPauseTime}
+            />
           </div>
         </div>
         <button id="prev" onClick={prevHandler} className="slide-prev">
@@ -296,4 +146,84 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
       </div>
     </Backdrop>
   );
+}
+
+const CarouselCell = ({
+  slide,
+  profiles,
+  dispatch,
+  setPauseTime,
+}: {
+  slide: Active;
+  profiles: ProfileProps[];
+  dispatch: ThunkDispatch<
+    {
+      slide: Active;
+    },
+    undefined,
+    AnyAction
+  > &
+    Dispatch<AnyAction>;
+  setPauseTime: Dispatch<SetStateAction<number | undefined>>;
+}) => {
+  return (
+    <div className="carousel__cell">
+      <div className="slide-items">
+        {profiles[slide.currentUserIndex].posts.map((post, index) => (
+          <img
+            key={index}
+            src={post}
+            className={`${index === slide.currentIndex ? "active" : ""}`}
+            alt=""
+          />
+        ))}
+      </div>
+      <nav
+        onMouseDown={() => {
+          let p = new Date();
+          setPauseTime(p.getMilliseconds());
+          dispatch(pause());
+        }}
+        onMouseUp={() => {
+          dispatch(play());
+        }}
+        className="slide-nav"
+      >
+        <div className="slide-thumb">
+          {profiles[slide.currentUserIndex].posts.map((_, index) => (
+            <span
+              key={index}
+              className={`
+                ${index === slide.currentIndex ? "active" : ""} 
+                ${index < slide.currentIndex ? "finished" : ""} 
+                ${!slide.playState ? "pause" : ""}
+                `}
+            ></span>
+          ))}
+        </div>
+        <div className="slide-userImage">
+          <img src={profiles[slide.currentUserIndex].profileImg} alt="" />
+        </div>
+        <div className="slide-username">
+          <p>{profiles[slide.currentUserIndex].username}</p>
+          {slide.playState ? (
+            <button>
+              <FontAwesomeIcon icon={faPlay} />
+            </button>
+          ) : (
+            <button>
+              <FontAwesomeIcon icon={faPause} />
+            </button>
+          )}
+        </div>
+      </nav>
+    </div>
+  );
+};
+
+interface ProfileProps {
+  id: string;
+  username: string;
+  profileImg: string;
+  posts: string[];
 }

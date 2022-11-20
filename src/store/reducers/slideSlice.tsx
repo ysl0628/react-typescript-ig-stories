@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-type Active = {
+export type Active = {
   currentIndex: number;
   currentUserIndex: number;
   playState: boolean;
