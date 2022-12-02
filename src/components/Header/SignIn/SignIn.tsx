@@ -1,6 +1,6 @@
 import {
-  createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
   updateProfile,
   User,
 } from 'firebase/auth'
@@ -13,9 +13,9 @@ import {
 } from 'react'
 import { auth } from '../../../firebase'
 import Backdrop from '../../../UI/Backdrop'
-import './signUp.css'
+import './signIn.css'
 
-const SignUp = ({
+const SignIn = ({
   handleClose,
   user,
   setUser,
@@ -54,15 +54,12 @@ const SignUp = ({
     }
   }, [setUser, user, username])
 
-  const handleSignUp = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleSignIn = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    createUserWithEmailAndPassword(auth, email || '', password || '')
-      .then((authUser) => {
-        return updateProfile(authUser.user, {
-          displayName: username,
-        })
-      })
-      .catch((error) => alert(error.message))
+    signInWithEmailAndPassword(auth, email || '', password || '').catch(
+      (error) => alert(error.message)
+    )
+    // setUser(auth.currentUser)
     handleClose()
   }
 
@@ -81,12 +78,6 @@ const SignUp = ({
             <input
               type='text'
               placeholder='username'
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-              type='text'
-              placeholder='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -98,8 +89,8 @@ const SignUp = ({
             />
           </form>
 
-          <button type='submit' onClick={(e) => handleSignUp(e)}>
-            Sign Up
+          <button type='submit' onClick={(e) => handleSignIn(e)}>
+            Sign In
           </button>
         </div>
       </div>
@@ -107,4 +98,4 @@ const SignUp = ({
   )
 }
 
-export default SignUp
+export default SignIn
