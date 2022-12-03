@@ -30,6 +30,7 @@ const SignIn = ({
   // const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
+    // 設置身份驗證狀態觀察者並獲取用戶數據
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
         // user logged in

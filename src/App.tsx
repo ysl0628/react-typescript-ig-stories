@@ -1,25 +1,26 @@
-import { useEffect, useState } from "react";
-import "./App.css";
-import Header from "./components/Header";
-import NavBar from "./components/NavBar";
-import Post from "./components/Post";
-import { db } from "./firebase";
+import { useEffect, useState } from 'react'
+import './App.css'
+import Header from './components/Header'
+import NavBar from './components/NavBar'
+import Post from './components/Post'
+import { db } from './firebase'
 import {
   collection,
   DocumentData,
   onSnapshot,
+  orderBy,
   query,
-} from "firebase/firestore";
+} from 'firebase/firestore'
 
 function App() {
-  const [posts, setPosts] = useState<DocumentData[]>([]);
+  const [posts, setPosts] = useState<DocumentData[]>([])
 
   useEffect(() => {
-    const q = query(collection(db, "posts"));
+    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'))
     onSnapshot(q, (snapshot) =>
       setPosts(snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() })))
-    );
-  }, []);
+    )
+  }, [])
 
   const renderPosts = () => {
     return posts.map(({ post, id }) => (
@@ -29,16 +30,16 @@ function App() {
         caption={post.caption}
         imageUrl={post.imageUrl}
       />
-    ));
-  };
+    ))
+  }
 
   return (
-    <div className="App">
+    <div className='App'>
       <Header />
       <NavBar />
       {renderPosts()}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
