@@ -2,12 +2,7 @@ import { Avatar } from '@mui/material'
 import './post.css'
 import ava from '../../assets/img/profile1.jpg'
 import {
-  serverTimestamp,
-  addDoc,
-  collection,
   onSnapshot,
-  orderBy,
-  query,
   DocumentData,
   updateDoc,
   doc,
