@@ -24,7 +24,7 @@ const SignIn = ({
   user: User | null
   setUser: Dispatch<SetStateAction<User | null>>
 }) => {
-  const [username, setUsername] = useState<string | undefined>('')
+  const [username, setUsername] = useState<string | undefined | null>('')
   const [email, setEmail] = useState<string | undefined>('')
   const [password, setPassword] = useState<string | undefined>('')
   // const [user, setUser] = useState<User | null>(null)
@@ -36,6 +36,7 @@ const SignIn = ({
         // user logged in
         console.log(authUser)
         setUser(authUser)
+        setUsername(auth.currentUser?.displayName)
         if (authUser.displayName) {
           // don't update name
           return

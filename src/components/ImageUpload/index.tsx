@@ -1,7 +1,8 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-import React, { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { db, storage } from '../../firebase'
+import './index.css'
 
 const ImageUpload = ({ username }: { username: string | null }) => {
   const [image, setImage] = useState<File | null>(null)
@@ -14,7 +15,6 @@ const ImageUpload = ({ username }: { username: string | null }) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0])
-      console.log(e.target.files[0])
     }
   }
   // Register three observers:
@@ -63,16 +63,21 @@ const ImageUpload = ({ username }: { username: string | null }) => {
   }
 
   return (
-    <div>
-      <progress className='upload-progress' value={progress} max='100' />
-      <input
-        type='text'
-        placeholder='Enter a caption...'
-        onChange={handleCaption}
-        value={caption}
-      />
-      <input type='file' onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload</button>
+    <div className='image-upload'>
+      <div className='upload-element'>
+        <progress className='upload-progress' value={progress} max='100' />
+        <input
+          className='upload-caption'
+          type='text'
+          placeholder='Enter a caption...'
+          onChange={handleCaption}
+          value={caption}
+        />
+        <input type='file' onChange={handleFileChange} />
+        <button className='upload-btn' onClick={handleUpload}>
+          Upload
+        </button>
+      </div>
     </div>
   )
 }
