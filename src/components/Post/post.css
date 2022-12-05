@@ -15,6 +15,7 @@
 .post_text {
   font-weight: normal;
   padding: 20px;
+  word-wrap: break-word;
 }
 .post_header {
   display: flex;
@@ -24,4 +25,41 @@
 }
 .post_avatar {
   margin-right: 10px;
+}
+
+.post_comments {
+  font-weight: normal;
+  padding-left: 20px;
+  padding-bottom: 1rem;
+  word-wrap: break-word;
+}
+
+.post_comments_box {
+  display: flex;
+  border-top: 1px solid #efefef;
+}
+
+.post_comments_box .form {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.75rem 1rem;
+}
+
+.post_input {
+  width: 100%;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  line-height: 1.5rem;
+  padding-left: 0.2rem;
+  border: 0px;
+}
+
+.post_button {
+  background-color: transparent;
+  border: 0px;
+  color: #089af6;
+  font-weight: 700;
+  cursor: pointer;
 }

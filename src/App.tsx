@@ -3,7 +3,7 @@ import './App.css'
 import Header from './components/Header'
 import NavBar from './components/NavBar'
 import Post from './components/Post'
-import { db } from './firebase'
+import { auth, db } from './firebase'
 import {
   collection,
   DocumentData,
@@ -11,15 +11,29 @@ import {
   orderBy,
   query,
 } from 'firebase/firestore'
+import ImageUpload from './components/ImageUpload'
+
+let didInit = false
+
+const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'))
 
 function App() {
   const [posts, setPosts] = useState<DocumentData[]>([])
 
+  const isLogin = auth.currentUser
+
   useEffect(() => {
-    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'))
-    onSnapshot(q, (snapshot) =>
-      setPosts(snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() })))
-    )
+    if (!didInit) {
+      console.log('render')
+
+      didInit = true
+
+      onSnapshot(q, (snapshot) => {
+        // console.log(snapshot.docs[0].data())
+
+        setPosts(snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() })))
+      })
+    }
   }, [])
 
   const renderPosts = () => {
@@ -29,6 +43,7 @@ function App() {
         username={post.username}
         caption={post.caption}
         imageUrl={post.imageUrl}
+        postId={id}
       />
     ))
   }
@@ -38,6 +53,9 @@ function App() {
       <Header />
       <NavBar />
       {renderPosts()}
+      {isLogin && (
+        <ImageUpload username={auth.currentUser?.displayName || null} />
+      )}
     </div>
   )
 }
