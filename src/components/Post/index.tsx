@@ -46,21 +46,16 @@ const Post = ({
     // })
 
     onSnapshot(doc(db, 'posts', postId), (snapshot) => {
-      console.log(snapshot.data())
-
       setComments(snapshot.data()?.comments)
     })
   }, [postId])
   // e: MouseEventHandler<HTMLButtonElement>
   const postComment = () => {
-    // console.log('send')
-    // console.log(comment)
-
     // e.preventDefault()
     updateDoc(doc(db, 'posts', postId), {
       comments: arrayUnion({
         text: comment,
-        username: 'test',
+        username: username,
         // timestamp: serverTimestamp(),
       }),
     }).catch((error) => console.log(error.message))
@@ -73,21 +68,19 @@ const Post = ({
     setComment('')
   }
 
-  // console.log(comments && comments.reverse())
-
   return (
-    <div className='post'>
-      <div className='post_header'>
-        <Avatar className='post_avatar' alt={'username'} src={ava} />
+    <div className="post">
+      <div className="post_header">
+        <Avatar className="post_avatar" alt={'username'} src={ava} />
         <h3>{username}</h3>
       </div>
-      <img className='post_image' src={imageUrl} alt='' />
-      <h4 className='post_text'>
+      <img className="post_image" src={imageUrl} alt="" />
+      <h4 className="post_text">
         <strong>{username} </strong>
         {caption}
       </h4>
       {comments && comments.length > 0 && (
-        <div className='post_comments'>
+        <div className="post_comments">
           {comments.map(
             (comment: { text: string; username: string }, index: number) => (
               <p key={comment.username + index}>
@@ -98,20 +91,20 @@ const Post = ({
           )}
         </div>
       )}
-      <div className='post_comments_box'>
-        <div className='form'>
+      <div className="post_comments_box">
+        <div className="form">
           <FontAwesomeIcon icon={faFaceSmile} />
           <input
-            className='post_input'
-            type='text'
-            placeholder='Add a comment.....'
+            className="post_input"
+            type="text"
+            placeholder="Add a comment....."
             value={comment ? comment : ''}
             onChange={(e) => setComment(e.target.value)}
           />
           <button
-            className='post_button'
+            className="post_button"
             // type='submit'
-            // disabled={!comment}
+            disabled={!comment}
             onClick={postComment}
           >
             Send

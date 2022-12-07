@@ -56,42 +56,41 @@ const SignIn = ({
     }
   }, [setUser, user, username])
 
-  const handleSignIn = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleSignIn = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    signInWithEmailAndPassword(auth, email || '', password || '').catch(
+    await signInWithEmailAndPassword(auth, email || '', password || '').catch(
       (error) => alert(error.message)
     )
-    // setUser(auth.currentUser)
     handleClose()
   }
 
   return (
     <Backdrop>
-      <div className='wrapper' onClick={handleClose}>
-        <div className='sign-up-content' onClick={(e) => e.stopPropagation()}>
-          <div className='logo-img'>
+      <div className="wrapper" onClick={handleClose}>
+        <div className="sign-up-content" onClick={(e) => e.stopPropagation()}>
+          <div className="logo-img">
             <img
-              src='https://www.freepnglogos.com/uploads/logo-ig-png/logo-ig-instagram-new-logo-vector-download-5.png'
-              alt=''
+              src="https://www.freepnglogos.com/uploads/logo-ig-png/logo-ig-instagram-new-logo-vector-download-5.png"
+              alt=""
               width={'100%'}
             />
           </div>
-          <form className='input-section'>
+          <form className="input-section">
             <input
-              type='text'
-              placeholder='username'
+              type="text"
+              placeholder="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
-              type='password'
-              placeholder='password'
+              type="password"
+              placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </form>
 
-          <button type='submit' onClick={(e) => handleSignIn(e)}>
+          <button type="submit" onClick={(e) => handleSignIn(e)}>
             Sign In
           </button>
         </div>

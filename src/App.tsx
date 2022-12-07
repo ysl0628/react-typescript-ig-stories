@@ -21,16 +21,13 @@ function App() {
   const [posts, setPosts] = useState<DocumentData[]>([])
 
   const isLogin = auth.currentUser
+  // console.log(auth.currentUser)
 
   useEffect(() => {
     if (!didInit) {
-      console.log('render')
-
       didInit = true
 
       onSnapshot(q, (snapshot) => {
-        // console.log(snapshot.docs[0].data())
-
         setPosts(snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() })))
       })
     }
@@ -49,7 +46,7 @@ function App() {
   }
 
   return (
-    <div className='App'>
+    <div className="App">
       <Header />
       <NavBar />
       {renderPosts()}

@@ -48,17 +48,15 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   const profiles = useProfile()
   const dispatch = useAppDispatch()
   const slide = useAppSelector((state) => state.slide)
-  // const angle = theta * slide.rotateIndex * -1;
   const cellWidth = carouselRef.current?.offsetWidth
-  // const radius = Math.round(cellWidth! / 2 / Math.tan(Math.PI / cellCount));
 
   useEffect(() => {
-    const radius = Math.round(cellWidth! / 2 / Math.tan(Math.PI / cellCount))
-    dispatch(setCarouselStyle(`translateZ(${-radius}px)`))
     let d = new Date()
     setClickTime(d.valueOf())
+    // 按下該用戶頭像，modal 由 z 軸浮出至 -110px
+    const radius = Math.round(cellWidth! / 2 / Math.tan(Math.PI / cellCount))
+    dispatch(setCarouselStyle(`translateZ(${-radius}px)`))
   }, [cellWidth, dispatch])
-  // rotateY(${angle}deg)
 
   const prevHandler = () => {
     let d = new Date()
@@ -103,9 +101,9 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
 
   return (
     <Backdrop>
-      <div data-slide='slide' className='slide'>
+      <div data-slide="slide" className="slide">
         <button
-          className='close-btn'
+          className="close-btn"
           onClick={() => {
             close(false)
             dispatch(init())
@@ -115,9 +113,9 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>
-        <div className='scene'>
+        <div className="scene">
           <div
-            className='carousel'
+            className="carousel"
             ref={carouselRef}
             style={{ transform: slide.carouselStyle }}
           >
@@ -141,10 +139,10 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
             />
           </div>
         </div>
-        <button id='prev' onClick={prevHandler} className='slide-prev'>
+        <button id="prev" onClick={prevHandler} className="slide-prev">
           <FontAwesomeIcon icon={faCircleChevronLeft} />
         </button>
-        <button id='next' onClick={nextHandler} className='slide-next'>
+        <button id="next" onClick={nextHandler} className="slide-next">
           <FontAwesomeIcon icon={faCircleChevronRight} />
         </button>
       </div>
@@ -171,14 +169,14 @@ const CarouselCell = ({
   setPauseTime: Dispatch<SetStateAction<number | undefined>>
 }) => {
   return (
-    <div className='carousel__cell'>
-      <div className='slide-items'>
+    <div className="carousel__cell">
+      <div className="slide-items">
         {profiles[slide.currentUserIndex].posts.map((post, index) => (
           <img
             key={index}
             src={post}
             className={`${index === slide.currentIndex ? 'active' : ''}`}
-            alt=''
+            alt=""
           />
         ))}
       </div>
@@ -191,9 +189,9 @@ const CarouselCell = ({
         onMouseUp={() => {
           dispatch(play())
         }}
-        className='slide-nav'
+        className="slide-nav"
       >
-        <div className='slide-thumb'>
+        <div className="slide-thumb">
           {profiles[slide.currentUserIndex].posts.map((_, index) => (
             <span
               key={index}
@@ -205,10 +203,10 @@ const CarouselCell = ({
             ></span>
           ))}
         </div>
-        <div className='slide-userImage'>
-          <img src={profiles[slide.currentUserIndex].profileImg} alt='' />
+        <div className="slide-userImage">
+          <img src={profiles[slide.currentUserIndex].profileImg} alt="" />
         </div>
-        <div className='slide-username'>
+        <div className="slide-username">
           <p>{profiles[slide.currentUserIndex].username}</p>
           {slide.playState ? (
             <button>

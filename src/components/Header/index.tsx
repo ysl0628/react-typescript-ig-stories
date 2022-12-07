@@ -14,22 +14,23 @@ const Header = () => {
   const handleSignUpClose = () => setSignUpOpen(false)
   const handleSignInOpen = () => setSignInOpen(true)
   const handleSignInClose = () => setSignInOpen(false)
-  const handleSignOut = () => {
-    auth.signOut()
+  const handleSignOut = async () => {
+    await auth.signOut()
     setUser(null)
   }
   const isLogin = auth.currentUser
+  console.log(auth.currentUser)
 
   return (
-    <div className='header'>
-      <div className='headerImage'>
+    <div className="header">
+      <div className="headerImage">
         <img
-          src='https://www.freepnglogos.com/uploads/logo-ig-png/logo-ig-instagram-new-logo-vector-download-5.png'
-          width='30'
-          alt='logo ig, instagram new logo vector download'
+          src="https://www.freepnglogos.com/uploads/logo-ig-png/logo-ig-instagram-new-logo-vector-download-5.png"
+          width="30"
+          alt="logo ig, instagram new logo vector download"
         />
       </div>
-      <div className='signUp-btn'>
+      <div className="signUp-btn">
         {isLogin ? (
           <button onClick={handleSignOut}>Logout</button>
         ) : (
