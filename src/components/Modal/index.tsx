@@ -55,10 +55,14 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   useEffect(() => {
     const radius = Math.round(cellWidth! / 2 / Math.tan(Math.PI / cellCount))
     dispatch(setCarouselStyle(`translateZ(${-radius}px)`))
+    let d = new Date()
+    setClickTime(d.valueOf())
   }, [cellWidth, dispatch])
   // rotateY(${angle}deg)
 
   const prevHandler = () => {
+    let d = new Date()
+    setClickTime(d.valueOf())
     if (slide.currentIndex > 0) return dispatch(prevSlide())
     if (slide.currentUserIndex === 0) {
       close(false)
@@ -73,7 +77,7 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
 
   const nextHandler = useCallback(() => {
     let d = new Date()
-    setClickTime(d.getMilliseconds())
+    setClickTime(d.valueOf())
     if (slide.currentIndex < profiles[slide.currentUserIndex].posts.length - 1)
       return dispatch(nextSlide())
 
@@ -181,7 +185,7 @@ const CarouselCell = ({
       <nav
         onMouseDown={() => {
           let p = new Date()
-          setPauseTime(p.getMilliseconds())
+          setPauseTime(p.valueOf())
           dispatch(pause())
         }}
         onMouseUp={() => {

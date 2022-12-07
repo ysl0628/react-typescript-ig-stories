@@ -53,8 +53,8 @@ const Post = ({
   }, [postId])
   // e: MouseEventHandler<HTMLButtonElement>
   const postComment = () => {
-    console.log('send')
-    console.log(comment)
+    // console.log('send')
+    // console.log(comment)
 
     // e.preventDefault()
     updateDoc(doc(db, 'posts', postId), {
@@ -73,7 +73,7 @@ const Post = ({
     setComment('')
   }
 
-  console.log(comments && comments.reverse())
+  // console.log(comments && comments.reverse())
 
   return (
     <div className='post'>
