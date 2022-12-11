@@ -1,27 +1,28 @@
-import { useAppDispatch } from "../../../hooks/useRedux";
+import { Dispatch, SetStateAction } from 'react'
+import { useAppDispatch } from '../../../hooks/useRedux'
 import {
+  play,
   setCarouselStyle,
   setCurrentUser,
-  setRotate,
-} from "../../../store/reducers/slideSlice";
+} from '../../../store/reducers/slideSlice'
 
 type ProfileProps = {
-  index: number;
-  id: string;
-  username?: string;
-  url: string;
-  posts: string[];
-  setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
-};
+  index: number
+  id: string
+  username?: string
+  url: string
+  posts: string[]
+  setModalShow: Dispatch<SetStateAction<boolean>>
+  setClickTime: Dispatch<SetStateAction<number | null>>
+}
 export default function Profile({
   index,
   id,
-  username,
   url,
-  posts,
+  setClickTime,
   setModalShow,
 }: ProfileProps) {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
   return (
     <>
@@ -29,14 +30,15 @@ export default function Profile({
         id={id}
         className="content"
         onClick={() => {
-          setModalShow((prev) => !prev);
-          dispatch(setCurrentUser(index));
-          dispatch(setRotate(index));
-          dispatch(setCarouselStyle("translateZ(-500px)"));
+          setModalShow((prev) => !prev)
+          setClickTime(new Date().valueOf())
+          dispatch(setCurrentUser(index))
+          dispatch(setCarouselStyle('translateZ(-500px)'))
+          dispatch(play(true))
         }}
       >
         <img src={url} alt="" />
       </div>
     </>
-  );
+  )
 }

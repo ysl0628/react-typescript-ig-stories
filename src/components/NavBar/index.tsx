@@ -1,14 +1,15 @@
-import { useState } from "react";
-import useProfile from "../../hooks/useProfile";
-import { useAppSelector } from "../../hooks/useRedux";
-import Modal from "../Modal";
-import "./index.css";
-import Profile from "./Profile";
+import { useState } from 'react'
+import useProfile from '../../hooks/useProfile'
+import { useAppSelector } from '../../hooks/useRedux'
+import Modal from '../Modal'
+import './index.css'
+import Profile from './Profile'
 
 export default function NavBar() {
-  const profiles = useProfile();
-  const [modalShow, setModalShow] = useState<boolean>(false);
-  const currentUser = useAppSelector((state) => state.slide.currentUserIndex);
+  const profiles = useProfile()
+  const [modalShow, setModalShow] = useState<boolean>(false)
+  const [clickTime, setClickTime] = useState<number | null>(null)
+  const currentUser = useAppSelector((state) => state.slide.currentUserIndex)
   return (
     <div className="stories-container">
       {profiles.map((profile, index) => (
@@ -19,6 +20,7 @@ export default function NavBar() {
           url={profile.profileImg}
           posts={profile.posts as string[]}
           setModalShow={setModalShow}
+          setClickTime={setClickTime}
         />
       ))}
       {modalShow && (
@@ -28,9 +30,9 @@ export default function NavBar() {
           posts={profiles[currentUser].posts as string[]}
           imgUrl={profiles[currentUser].profileImg}
           username={profiles[currentUser].username}
-          // modalShow={modalShow}
+          userClickTime={clickTime}
         />
       )}
     </div>
-  );
+  )
 }
