@@ -12,6 +12,7 @@ import { db } from '../../firebase'
 import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFaceSmile } from '@fortawesome/free-regular-svg-icons'
+import { User } from 'firebase/auth'
 
 // , orderBy('timestamp', 'desc')
 
@@ -20,11 +21,13 @@ import { faFaceSmile } from '@fortawesome/free-regular-svg-icons'
 // const qu = doc(db, 'posts', 'comments')
 
 const Post = ({
+  currentUser,
   username,
   caption,
   imageUrl,
   postId,
 }: {
+  currentUser: User | null
   username: string
   caption: string
   imageUrl: string
@@ -55,7 +58,7 @@ const Post = ({
     updateDoc(doc(db, 'posts', postId), {
       comments: arrayUnion({
         text: comment,
-        username: username,
+        username: currentUser?.displayName,
         // timestamp: serverTimestamp(),
       }),
     }).catch((error) => console.log(error.message))
