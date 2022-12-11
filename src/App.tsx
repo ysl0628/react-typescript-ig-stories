@@ -12,6 +12,7 @@ import {
   query,
 } from 'firebase/firestore'
 import ImageUpload from './components/ImageUpload'
+import { User } from 'firebase/auth'
 
 let didInit = false
 
@@ -19,9 +20,7 @@ const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'))
 
 function App() {
   const [posts, setPosts] = useState<DocumentData[]>([])
-
-  const isLogin = auth.currentUser
-  // console.log(auth.currentUser)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     if (!didInit) {
@@ -41,18 +40,17 @@ function App() {
         caption={post.caption}
         imageUrl={post.imageUrl}
         postId={id}
+        currentUser={user}
       />
     ))
   }
 
   return (
     <div className="App">
-      <Header />
+      <Header setUser={setUser} user={user} />
       <NavBar />
       {renderPosts()}
-      {isLogin && (
-        <ImageUpload username={auth.currentUser?.displayName || null} />
-      )}
+      {user && <ImageUpload username={auth.currentUser?.displayName || null} />}
     </div>
   )
 }

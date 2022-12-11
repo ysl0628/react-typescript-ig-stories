@@ -1,11 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit'
 import {
   faCircleChevronLeft,
@@ -28,7 +21,6 @@ import {
   prevSlide,
   setCarouselStyle,
   setCurrentUser,
-  setRotate,
 } from '../../store/reducers/slideSlice'
 import Backdrop from '../../UI/Backdrop'
 
@@ -37,12 +29,19 @@ type ModalProps = {
   posts: string[]
   imgUrl: string
   username: string
+  userClickTime: number | null
 }
 const cellCount = 3
 
-export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
-  const [clickTime, setClickTime] = useState<number>()
-  const [pauseTime, setPauseTime] = useState<number>()
+export default function Modal({
+  close,
+  posts,
+  imgUrl,
+  username,
+  userClickTime,
+}: ModalProps) {
+  const [clickTime, setClickTime] = useState<number | null>(userClickTime)
+  const [remainTime, setRemainTime] = useState<number>(5000)
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
   const carouselRef = useRef<null | HTMLDivElement>(null)
   const profiles = useProfile()
@@ -51,31 +50,30 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
   const cellWidth = carouselRef.current?.offsetWidth
 
   useEffect(() => {
-    let d = new Date()
-    setClickTime(d.valueOf())
+    setClickTime(Date.now())
     // 按下該用戶頭像，modal 由 z 軸浮出至 -110px
     const radius = Math.round(cellWidth! / 2 / Math.tan(Math.PI / cellCount))
     dispatch(setCarouselStyle(`translateZ(${-radius}px)`))
   }, [cellWidth, dispatch])
 
   const prevHandler = () => {
-    let d = new Date()
-    setClickTime(d.valueOf())
+    setClickTime(Date.now())
+    setRemainTime(5000)
     if (slide.currentIndex > 0) return dispatch(prevSlide())
     if (slide.currentUserIndex === 0) {
       close(false)
       dispatch(init())
     }
-    if (slide.rotateIndex === 0) return dispatch(setRotate(0))
+    // if (slide.rotateIndex === 0) return dispatch(setRotate(0))
     dispatch(setCarouselStyle(`translateZ(-110px) rotateY(-120deg)`))
-    dispatch(setRotate(slide.currentUserIndex - 1))
+    // dispatch(setRotate(slide.currentUserIndex - 1))
     dispatch(setCurrentUser(slide.currentUserIndex - 1))
     dispatch(init())
   }
 
   const nextHandler = useCallback(() => {
-    let d = new Date()
-    setClickTime(d.valueOf())
+    setClickTime(Date.now())
+    setRemainTime(5000)
     if (slide.currentIndex < profiles[slide.currentUserIndex].posts.length - 1)
       return dispatch(nextSlide())
 
@@ -83,7 +81,7 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
       dispatch(setCurrentUser(0)) && dispatch(init())
       return
     }
-    dispatch(setRotate(slide.currentUserIndex + 1))
+    // dispatch(setRotate(slide.currentUserIndex + 1))
     dispatch(setCurrentUser(slide.currentUserIndex + 1))
     dispatch(setCarouselStyle(`translateZ(-110px) rotateY(120deg)`))
     dispatch(init())
@@ -91,13 +89,26 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
 
   useEffect(() => {
     slide.playState
-      ? (timerRef.current = setTimeout(
-          nextHandler,
-          clickTime && pauseTime ? 5000 - (pauseTime - clickTime) : 5000
-        ))
+      ? (timerRef.current = setTimeout(nextHandler, remainTime))
       : clearTimeout(timerRef.current)
     return () => clearTimeout(timerRef.current)
-  }, [clickTime, nextHandler, pauseTime, posts.length, slide.playState])
+  }, [nextHandler, remainTime, slide.playState])
+
+  const handleResume = () => {
+    // console.log('pauseTime', slide.pauseTime)
+    dispatch(play(true))
+    const time = Number(remainTime) < 0 ? 10 : remainTime
+    // console.log('time :>> ', time)
+    // console.log('remainTime :>> ', remainTime)
+    timerRef.current = setTimeout(nextHandler, slide.pauseTime ? time : 5000)
+  }
+
+  const handlePause = () => {
+    dispatch(pause())
+    clearTimeout(timerRef.current)
+    setRemainTime(5000 - (Date.now() - (clickTime || 0)))
+    // console.log('clickTime', clickTime)
+  }
 
   return (
     <Backdrop>
@@ -123,19 +134,22 @@ export default function Modal({ close, posts, imgUrl, username }: ModalProps) {
               slide={slide}
               profiles={profiles}
               dispatch={dispatch}
-              setPauseTime={setPauseTime}
+              handlePause={handlePause}
+              handleResume={handleResume}
             />
             <CarouselCell
               slide={slide}
               profiles={profiles}
               dispatch={dispatch}
-              setPauseTime={setPauseTime}
+              handlePause={handlePause}
+              handleResume={handleResume}
             />
             <CarouselCell
               slide={slide}
               profiles={profiles}
               dispatch={dispatch}
-              setPauseTime={setPauseTime}
+              handlePause={handlePause}
+              handleResume={handleResume}
             />
           </div>
         </div>
@@ -154,7 +168,8 @@ const CarouselCell = ({
   slide,
   profiles,
   dispatch,
-  setPauseTime,
+  handleResume,
+  handlePause,
 }: {
   slide: Active
   profiles: ProfileProps[]
@@ -166,7 +181,8 @@ const CarouselCell = ({
     AnyAction
   > &
     Dispatch<AnyAction>
-  setPauseTime: Dispatch<SetStateAction<number | undefined>>
+  handleResume: () => void
+  handlePause: () => void
 }) => {
   return (
     <div className="carousel__cell">
@@ -181,14 +197,8 @@ const CarouselCell = ({
         ))}
       </div>
       <nav
-        onMouseDown={() => {
-          let p = new Date()
-          setPauseTime(p.valueOf())
-          dispatch(pause())
-        }}
-        onMouseUp={() => {
-          dispatch(play())
-        }}
+        onClick={slide.playState ? handlePause : handleResume}
+        // onMouseUp={handleResume}
         className="slide-nav"
       >
         <div className="slide-thumb">
