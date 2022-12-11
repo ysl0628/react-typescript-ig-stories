@@ -1,25 +1,32 @@
 import { User } from 'firebase/auth'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { auth } from '../../firebase'
 import './index.css'
 import SignIn from './SignIn/SignIn'
 import SignUp from './SignUp/SignUp'
 
-const Header = () => {
+const Header = ({
+  user,
+  setUser,
+}: {
+  user: User | null
+  setUser: Dispatch<SetStateAction<User | null>>
+}) => {
   const [signUpOpen, setSignUpOpen] = useState<boolean>(false)
   const [signInOpen, setSignInOpen] = useState<boolean>(false)
-  const [user, setUser] = useState<User | null>(null)
 
   const handleSignUpOpen = () => setSignUpOpen(true)
   const handleSignUpClose = () => setSignUpOpen(false)
   const handleSignInOpen = () => setSignInOpen(true)
   const handleSignInClose = () => setSignInOpen(false)
   const handleSignOut = async () => {
+    console.log('logout')
+
     await auth.signOut()
     setUser(null)
   }
   const isLogin = auth.currentUser
-  console.log(auth.currentUser)
+  console.log('logout', auth.currentUser)
 
   return (
     <div className="header">

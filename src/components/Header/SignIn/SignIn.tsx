@@ -34,9 +34,9 @@ const SignIn = ({
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
         // user logged in
-        console.log(authUser)
         setUser(authUser)
         setUsername(auth.currentUser?.displayName)
+
         if (authUser.displayName) {
           // don't update name
           return
@@ -58,9 +58,13 @@ const SignIn = ({
 
   const handleSignIn = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    await signInWithEmailAndPassword(auth, email || '', password || '').catch(
-      (error) => alert(error.message)
-    )
+    try {
+      await signInWithEmailAndPassword(auth, email || '', password || '')
+    } catch (error) {
+      alert(error)
+    }
+    auth.currentUser && alert('Welcome back! ' + auth.currentUser.displayName)
+
     handleClose()
   }
 

@@ -56,49 +56,53 @@ const SignUp = ({
 
   const handleSignUp = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    createUserWithEmailAndPassword(auth, email || '', password || '')
-      .then((authUser) => {
-        return updateProfile(authUser.user, {
-          displayName: username,
-        })
-      })
-      .catch((error) => alert(error.message))
-    handleClose()
+    try {
+      createUserWithEmailAndPassword(auth, email || '', password || '').then(
+        (authUser) => {
+          return updateProfile(authUser.user, {
+            displayName: username,
+          })
+        }
+      )
+    } catch (error) {
+      alert(error)
+      handleClose()
+    }
   }
 
   return (
     <Backdrop>
-      <div className='wrapper' onClick={handleClose}>
-        <div className='sign-up-content' onClick={(e) => e.stopPropagation()}>
-          <div className='logo-img'>
+      <div className="wrapper" onClick={handleClose}>
+        <div className="sign-up-content" onClick={(e) => e.stopPropagation()}>
+          <div className="logo-img">
             <img
-              src='https://www.freepnglogos.com/uploads/logo-ig-png/logo-ig-instagram-new-logo-vector-download-5.png'
-              alt=''
+              src="https://www.freepnglogos.com/uploads/logo-ig-png/logo-ig-instagram-new-logo-vector-download-5.png"
+              alt=""
               width={'100%'}
             />
           </div>
-          <form className='input-section'>
+          <form className="input-section">
             <input
-              type='text'
-              placeholder='username'
+              type="text"
+              placeholder="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
             <input
-              type='text'
-              placeholder='email'
+              type="text"
+              placeholder="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
-              type='password'
-              placeholder='password'
+              type="password"
+              placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </form>
 
-          <button type='submit' onClick={(e) => handleSignUp(e)}>
+          <button type="submit" onClick={(e) => handleSignUp(e)}>
             Sign Up
           </button>
         </div>
